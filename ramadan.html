@@ -750,7 +750,8 @@
             ));
             let negStr = (negKey ? row[negKey] : '').toLowerCase();
             Object.keys(countryAliases).forEach(alias => {
-               if (negStr.includes(alias)) {
+               let regex = new RegExp(`\\b${alias}\\b`, 'i');
+               if (regex.test(negStr)) {
                   let canonical = countryAliases[alias];
                   negaraMap.set(canonical, (negaraMap.get(canonical) || 0) + 1);
                }
