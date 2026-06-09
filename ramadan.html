@@ -411,6 +411,16 @@
       "Maluku Utara", "Maluku", "Papua Barat Daya", "Papua Barat", "Papua Selatan", "Papua Tengah", "Papua Pegunungan", "Papua"
     ];
 
+    const islandMap = {
+      'sumatera': ['Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Kepulauan Riau', 'Jambi', 'Sumatera Selatan', 'Kepulauan Bangka Belitung', 'Bengkulu', 'Lampung'],
+      'sumatra': ['Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Kepulauan Riau', 'Jambi', 'Sumatera Selatan', 'Kepulauan Bangka Belitung', 'Bengkulu', 'Lampung'],
+      'kalimantan': ['Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Kalimantan Timur', 'Kalimantan Utara'],
+      'sulawesi': ['Sulawesi Utara', 'Gorontalo', 'Sulawesi Tengah', 'Sulawesi Barat', 'Sulawesi Selatan', 'Sulawesi Tenggara'],
+      'jawa': ['Banten', 'DKI Jakarta', 'Jawa Barat', 'Jawa Tengah', 'DI Yogyakarta', 'Jawa Timur'],
+      'nusa tenggara': ['Nusa Tenggara Barat', 'Nusa Tenggara Timur'],
+      'maluku': ['Maluku', 'Maluku Utara']
+    };
+
     const countryAliases = {
       'palestin': 'Palestina', 'gaza': 'Palestina', 'tepi barat': 'Palestina',
       'syiria': 'Suriah', 'suriah': 'Suriah',
@@ -695,6 +705,28 @@
                       opzProvSet.add(provinceAliases[alias]);
                    }
                 });
+
+                Object.keys(islandMap).forEach(island => {
+                    let regex;
+                    if (island === 'sumatera' || island === 'sumatra') {
+                        regex = new RegExp('\\b' + island + '\\b(?!\\s+(utara|barat|selatan))', 'i');
+                    } else if (island === 'kalimantan') {
+                        regex = new RegExp('\\b' + island + '\\b(?!\\s+(barat|tengah|selatan|timur|utara))', 'i');
+                    } else if (island === 'sulawesi') {
+                        regex = new RegExp('\\b' + island + '\\b(?!\\s+(utara|tengah|barat|selatan|tenggara))', 'i');
+                    } else if (island === 'jawa') {
+                        regex = new RegExp('\\b' + island + '\\b(?!\\s+(barat|tengah|timur))', 'i');
+                    } else {
+                        regex = new RegExp('\\b' + island + '\\b', 'i');
+                    }
+                    if (regex.test(provStr)) {
+                        islandMap[island].forEach(p => opzProvSet.add(p));
+                    }
+                });
+             }
+
+             if ((row['Nama LAZ / BAZ'] || row['Nama OPZ'] || '').toLowerCase().includes('ydsf')) {
+                 opzProvSet.add('Papua Tengah');
              }
             
             let touchesPoverty = false;
