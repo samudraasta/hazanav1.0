@@ -1872,11 +1872,15 @@ body {
     transform: translateX(0);
   }
   .sidebar .menu-btn {
-    display: none;
+    display: flex !important;
   }
   
   /* Override collapsed styles on mobile */
   .sidebar.collapsed .sidebar-logo span,
+  .sidebar.collapsed .sidebar-logo .logo-icon {
+    opacity: 1 !important;
+    display: flex !important;
+  }
   .sidebar.collapsed .sidebar-menu li a span {
     opacity: 1 !important;
     display: inline !important;
