@@ -1355,12 +1355,16 @@
 
     if(desktopBtn && mobileBtn && sidebar && mainContent) {
       desktopBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded');
-        
-        // Save state
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        localStorage.setItem('sidebarState', isCollapsed ? 'collapsed' : 'expanded');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+        } else {
+          sidebar.classList.toggle('collapsed');
+          mainContent.classList.toggle('expanded');
+          
+          // Save state
+          const isCollapsed = sidebar.classList.contains('collapsed');
+          localStorage.setItem('sidebarState', isCollapsed ? 'collapsed' : 'expanded');
+        }
       });
 
       mobileBtn.addEventListener('click', () => {
