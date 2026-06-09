@@ -17,7 +17,7 @@
       <button id="mobile-menu-btn" class="menu-btn"><i class="fas fa-bars"></i></button>
       <div class="mobile-logo">HAZANA</div>
     </div>
-    <aside class="sidebar">
+    <aside class="sidebar collapsed">
       <div class="sidebar-logo">
         <button id="desktop-menu-btn" class="menu-btn"><i class="fas fa-bars"></i></button>
         <div class="logo-icon">H</div>
@@ -35,12 +35,12 @@
         <li><a href="hazana-pitchdeck.html" target="_blank"><i class="fas fa-info-circle"></i> <span style="line-height: 1.2;">About HAZANA<br><small style="font-weight: 500; font-size: 0.6rem; opacity: 0.8;">Harmoni Zakat Nasional</small></span></a></li>
       </ul>
     </aside>
-    <main class="main-content">
+    <main class="main-content expanded">
       <script>
         // Prevent FOUC (flickering) by applying saved state synchronously
-        if (localStorage.getItem('sidebarState') === 'collapsed' && window.innerWidth > 768) {
-          document.querySelector('.sidebar').classList.add('collapsed');
-          document.querySelector('.main-content').classList.add('expanded');
+        if (localStorage.getItem('sidebarState') === 'expanded' && window.innerWidth > 768) {
+          document.querySelector('.sidebar').classList.remove('collapsed');
+          document.querySelector('.main-content').classList.remove('expanded');
         }
       </script>
 
