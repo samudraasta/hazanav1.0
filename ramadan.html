@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kurban OPZ Anggota FOZ - 1447 H / 2026</title>
+  <title>Ramadan OPZ Anggota FOZ - 1447 H / 2026</title>
   <link rel="stylesheet" href="kurban2026.css?v=5">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -334,7 +334,7 @@
   <div id="map-modal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 style="margin:0;">Peta Sebaran Kurban Nasional</h2>
+        <h2 style="margin:0;">Peta Sebaran Ramadan Nasional</h2>
         <button id="close-modal" class="btn-close"><i class="fas fa-times"></i></button>
       </div>
       <div id="modal-regions_div" style="width: 100%; height: 75vh;">
@@ -953,7 +953,7 @@
 
           // 2. Dinamika Lokal vs Nasional (POV Asosiasi)
           let dinamikaDesc = '';
-          if (growKab > growNas && growKab > growProv) dinamikaDesc = `OPZ skala <strong>Kab/Kota tumbuh paling cepat (+${growKab}%)</strong> dibanding Provinsi (+${growProv}%) dan Nasional (+${growNas}%). Momentum kurban menguat di akar rumput — FOZ perlu memperkuat pembinaan kapasitas OPZ lokal untuk memaksimalkan potensi ini.`;
+          if (growKab > growNas && growKab > growProv) dinamikaDesc = `OPZ skala <strong>Kab/Kota tumbuh paling cepat (+${growKab}%)</strong> dibanding Provinsi (+${growProv}%) dan Nasional (+${growNas}%). Momentum ramadan menguat di akar rumput — FOZ perlu memperkuat pembinaan kapasitas OPZ lokal untuk memaksimalkan potensi ini.`;
           else if (growNas > growKab && growNas > growProv) dinamikaDesc = `OPZ skala <strong>Nasional memimpin pertumbuhan (+${growNas}%)</strong> dibanding Provinsi (+${growProv}%) dan Kab/Kota (+${growKab}%). Jaringan dan brand OPZ besar masih menjadi motor utama — FOZ dapat mendorong kolaborasi agar momentum ini juga menular ke OPZ lokal.`;
           else dinamikaDesc = `OPZ skala <strong>Provinsi tumbuh paling tinggi (+${growProv}%)</strong> dibanding Nasional (+${growNas}%) dan Kab/Kota (+${growKab}%). OPZ tingkat regional sedang dalam fase ekspansi — peluang bagi FOZ untuk memperkuat jejaring di level ini.`;
           document.getElementById('iv-dinamika').innerHTML = `<span style="color:#10b981">Lokal +${growKab}%</span> &nbsp;vs&nbsp; <span style="color:#3b82f6">Nasional +${growNas}%</span>`;
@@ -963,7 +963,7 @@
 
           // 4. Fokus Kantong Kemiskinan
           let pctKemiskinan = opzList.length > 0 ? Math.round((countOpzKantongKemiskinan / opzList.length) * 100) : 0;
-          let kemiskinanDesc = `Sebanyak <strong>${pctKemiskinan}% OPZ anggota FOZ</strong> telah memastikan kurbannya turut tersalurkan ke dalam 16 provinsi prioritas utama yang menyumbang 80% beban kemiskinan ekstrem nasional.`;
+          let kemiskinanDesc = `Sebanyak <strong>${pctKemiskinan}% OPZ anggota FOZ</strong> telah memastikan zakat & infaknya turut tersalurkan ke dalam 16 provinsi prioritas utama yang menyumbang 80% beban kemiskinan ekstrem nasional.`;
           document.getElementById('iv-dampak').innerHTML = `${pctKemiskinan}% <span style="font-size:0.75rem; color:var(--text-muted);">OPZ Hadir</span>`;
           document.getElementById('id-dampak').innerHTML = kemiskinanDesc;
 
