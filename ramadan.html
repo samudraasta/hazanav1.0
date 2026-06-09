@@ -423,7 +423,17 @@
       'kamerun': 'Kamerun',
       'mali': 'Mali',
       'niger': 'Niger',
-      'ethiopia': 'Ethiopia', 'ethopia': 'Ethiopia'
+      'ethiopia': 'Ethiopia', 'ethopia': 'Ethiopia',
+      'amerika': 'Amerika Serikat',
+      'australia': 'Australia',
+      'hongkong': 'Hongkong', 'hong kong': 'Hongkong',
+      'inggris': 'Inggris', 'uk': 'Inggris',
+      'jepang': 'Jepang',
+      'jerman': 'Jerman',
+      'kaledonia': 'Kaledonia Baru',
+      'korea': 'Korea Selatan',
+      'perancis': 'Perancis', 'prancis': 'Perancis',
+      'thailand': 'Thailand'
     };
 
     const opzDomains = {
@@ -689,7 +699,11 @@
                 provCountMap.set(p, (provCountMap.get(p) || 0) + 1);
             });
             
-            let negKey = Object.keys(row).find(k => k && k.toLowerCase().includes('negara') && k.toLowerCase().includes('penyaluran'));
+            let negKey = Object.keys(row).find(k => k && (
+               (k.toLowerCase().includes('negara') && k.toLowerCase().includes('penyaluran')) ||
+               k.toLowerCase().includes('luar negeri') ||
+               k.toLowerCase().includes('wilayah penyaluran ramadan')
+            ));
             let negStr = (negKey ? row[negKey] : '').toLowerCase();
             Object.keys(countryAliases).forEach(alias => {
                if (negStr.includes(alias)) {
@@ -776,6 +790,16 @@
                else if(name === 'Mali') iso = 'ml';
                else if(name === 'Niger') iso = 'ne';
                else if(name === 'Ethiopia') iso = 'et';
+               else if(name === 'Amerika Serikat') iso = 'us';
+               else if(name === 'Australia') iso = 'au';
+               else if(name === 'Hongkong') iso = 'hk';
+               else if(name === 'Inggris') iso = 'gb';
+               else if(name === 'Jepang') iso = 'jp';
+               else if(name === 'Jerman') iso = 'de';
+               else if(name === 'Kaledonia Baru') iso = 'nc';
+               else if(name === 'Korea Selatan') iso = 'kr';
+               else if(name === 'Perancis') iso = 'fr';
+               else if(name === 'Thailand') iso = 'th';
                
                let flagHtml = iso 
                  ? `<img src="https://flagcdn.com/w40/${iso}.png" alt="${name}" style="width: 32px; height: 24px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">`
