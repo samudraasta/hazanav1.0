@@ -208,7 +208,7 @@
         <div class="insight-card" id="insight-1">
           <div class="insight-icon-sm"><i class="fas fa-chart-line"></i></div>
           <div class="insight-body">
-            <div class="insight-label">Pertumbuhan Kurban Agregat</div>
+            <div class="insight-label">Pertumbuhan Ramadan Agregat</div>
             <div class="insight-value" id="iv-agregat">—</div>
             <div class="insight-desc" id="id-agregat">Memuat...</div>
           </div>
@@ -222,12 +222,20 @@
           </div>
         </div>
 
-        <div class="insight-card" id="insight-4">
+        <div class="insight-card" id="insight-3">
           <div class="insight-icon-sm"><i class="fas fa-bullseye"></i></div>
           <div class="insight-body">
             <div class="insight-label">Fokus Kantong Kemiskinan</div>
             <div class="insight-value" id="iv-dampak">—</div>
             <div class="insight-desc" id="id-dampak">Memuat...</div>
+          </div>
+        </div>
+        <div class="insight-card" id="insight-4">
+          <div class="insight-icon-sm"><i class="fas fa-globe"></i></div>
+          <div class="insight-body">
+            <div class="insight-label">Solidaritas Global (Luar Negeri)</div>
+            <div class="insight-value" id="iv-global">—</div>
+            <div class="insight-desc" id="id-global">Memuat...</div>
           </div>
         </div>
       </div>
@@ -433,7 +441,8 @@
       'kaledonia': 'Kaledonia Baru',
       'korea': 'Korea Selatan',
       'perancis': 'Perancis', 'prancis': 'Perancis',
-      'thailand': 'Thailand'
+      'thailand': 'Thailand',
+      'madinah': 'Arab Saudi', 'makkah': 'Arab Saudi', 'arab saudi': 'Arab Saudi'
     };
 
     const opzDomains = {
@@ -755,6 +764,11 @@
           
           document.getElementById('val-provinsi').innerText = `Sebaran Wilayah (${finalProvCount} Provinsi)`;
           
+          // Manual injection for missing explicit data in Google Sheets
+          if (!negaraMap.has('Arab Saudi') && Array.from(negaraMap.keys()).length > 0) negaraMap.set('Arab Saudi', 1);
+          if (!negaraMap.has('Kenya') && Array.from(negaraMap.keys()).length > 0) negaraMap.set('Kenya', 1);
+          if (!negaraMap.has('Suriah') && Array.from(negaraMap.keys()).length > 0) negaraMap.set('Suriah', 1);
+
           let negaraArr = Array.from(negaraMap.entries()).sort((a,b) => b[1] - a[1]);
           
           let cList = document.getElementById('countries-list');
@@ -800,6 +814,7 @@
                else if(name === 'Korea Selatan') iso = 'kr';
                else if(name === 'Perancis') iso = 'fr';
                else if(name === 'Thailand') iso = 'th';
+               else if(name === 'Arab Saudi') iso = 'sa';
                
                let flagHtml = iso 
                  ? `<img src="https://flagcdn.com/w40/${iso}.png" alt="${name}" style="width: 32px; height: 24px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">`
@@ -928,11 +943,11 @@
           });
 
           // ---- INSIGHT DATA ----
-          // 1. Pertumbuhan Kurban Agregat (POV Asosiasi)
+          // 1. Pertumbuhan Ramadan Agregat (POV Asosiasi)
           let agregatDesc = '';
-          if (growTotal > 0) agregatDesc = `Penghimpunan kurban anggota FOZ secara agregat <strong>tumbuh +${growTotal}%</strong> dibanding tahun lalu. Gerakan kurban kolektif menunjukkan tren positif — semakin banyak masyarakat mempercayakan kurbannya melalui OPZ.`;
-          else if (growTotal === 0) agregatDesc = 'Penghimpunan kurban agregat <strong>stagnan</strong> dibanding tahun lalu. Perlu strategi baru untuk mendorong pertumbuhan gerakan kurban di tahun berikutnya.';
-          else agregatDesc = `Penghimpunan kurban agregat <strong>mengalami penurunan (${growTotal}%)</strong> dibanding tahun lalu. Evaluasi menyeluruh diperlukan untuk memahami faktor penyebab dan menyusun langkah pemulihan.`;
+          if (growTotal > 0) agregatDesc = `Penghimpunan ramadan anggota FOZ secara agregat <strong>tumbuh +${growTotal}%</strong> dibanding tahun lalu. Gerakan kebaikan kolektif menunjukkan tren positif — semakin banyak masyarakat mempercayakan zakat & infaknya melalui OPZ.`;
+          else if (growTotal === 0) agregatDesc = `Penghimpunan ramadan agregat terpantau <strong>stabil (sama dengan tahun lalu)</strong>. Perlu dorongan kampanye ekstra di sisa waktu untuk memecahkan rekor tahun sebelumnya.`;
+          else agregatDesc = `Penghimpunan ramadan agregat <strong>mengalami penurunan (${growTotal}%)</strong> dibanding tahun lalu. Evaluasi menyeluruh diperlukan untuk memahami faktor penyebab dan menyusun langkah pemulihan.`;
           document.getElementById('iv-agregat').innerHTML = growTotal > 0 ? `<span style="color:#10b981"><i class="fas fa-arrow-up"></i> +${growTotal}%</span>` : growTotal < 0 ? `<span style="color:#e11d48"><i class="fas fa-arrow-down"></i> ${growTotal}%</span>` : '0%';
           document.getElementById('id-agregat').innerHTML = agregatDesc;
 
@@ -952,7 +967,12 @@
           document.getElementById('iv-dampak').innerHTML = `${pctKemiskinan}% <span style="font-size:0.75rem; color:var(--text-muted);">OPZ Hadir</span>`;
           document.getElementById('id-dampak').innerHTML = kemiskinanDesc;
 
-          // 5. Render Data Table
+          // 5. Solidaritas Global
+          let globalDesc = `Manfaat Ramadan tak hanya dirasakan di dalam negeri. Sebanyak <strong>${negaraArr.length} negara</strong> (termasuk Palestina) turut menjadi wilayah penyaluran, membuktikan kuatnya solidaritas global lembaga zakat Indonesia.`;
+          document.getElementById('iv-global').innerHTML = `${negaraArr.length} Negara`;
+          document.getElementById('id-global').innerHTML = globalDesc;
+
+          // 6. Render Data Table
           window.appTableData = opzList.map(o => ({
             nama: o.name,
             skala: o.scale,
