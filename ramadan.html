@@ -1376,6 +1376,23 @@
       }
     });
 
+    // Animate sidebar hide on menu click (Mobile Only)
+    const menuLinks = document.querySelectorAll('.sidebar-menu a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const targetHref = link.getAttribute('href');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('open');
+          if (targetHref && targetHref !== '#' && !targetHref.startsWith('javascript:')) {
+            e.preventDefault();
+            setTimeout(() => {
+              window.location.href = targetHref;
+            }, 300);
+          }
+        }
+      });
+    });
+
       }
     });
   </script>
