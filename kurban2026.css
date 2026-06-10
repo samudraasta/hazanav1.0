@@ -1694,7 +1694,7 @@ body {
 }
 
 .sidebar.collapsed {
-  width: 72px;
+  width: 80px;
 }
 
 .sidebar-logo {
@@ -1754,7 +1754,7 @@ body {
 }
 
 .sidebar.collapsed .sidebar-logo {
-  padding-left: 16px;
+  /* padding falls back to default 0 20px */
 }
 
 .sidebar-menu {
@@ -1779,7 +1779,8 @@ body {
 
 .sidebar.collapsed .sidebar-menu li a {
   border-radius: 50%;
-  margin: 0 auto;
+  margin: 0;
+  margin-left: 20px;
   padding: 0;
   justify-content: center;
   width: 40px;
@@ -1873,7 +1874,7 @@ body {
 }
 
 .main-content.expanded {
-  margin-left: 72px;
+  margin-left: 80px;
 }
 
 .mobile-header {
