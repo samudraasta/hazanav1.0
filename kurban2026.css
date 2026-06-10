@@ -1774,7 +1774,7 @@ body {
 
 .sidebar.collapsed .sidebar-menu li a {
   border-radius: 50%;
-  margin-right: 20px;
+  margin: 0 auto;
   padding: 12px 0;
   justify-content: center;
   width: 44px;
@@ -1855,6 +1855,8 @@ body {
 
 /* Main Content */
 .main-content {
+  flex: 1;
+  min-width: 0;
   margin-left: 250px;
   padding: 2rem;
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
