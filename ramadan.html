@@ -426,7 +426,7 @@
 
     const countryAliases = {
       'palestina': 'Palestina', 'palestin': 'Palestina', 'gaza': 'Palestina', 'tepi barat': 'Palestina',
-      'syiria': 'Suriah', 'suriah': 'Suriah',
+      'syiria': 'Suriah', 'suriah': 'Suriah', 'syria': 'Suriah',
       'jordan': 'Yordania', 'yordania': 'Yordania', 'jordania': 'Yordania',
       'lebanon': 'Lebanon', 'libanon': 'Lebanon',
       'mesir': 'Mesir',
@@ -437,14 +437,23 @@
       'sudan': 'Sudan',
       'madagaskar': 'Madagaskar',
       'chad': 'Chad',
-      'turki': 'Turki',
+      'turki': 'Turki', 'turkiye': 'Turki', 'türkiye': 'Turki',
       'myanmar': 'Myanmar', 'rohingya': 'Myanmar',
       'filipina': 'Filipina',
       'timor': 'Timor Leste', 'timor leste': 'Timor Leste', 'timor-leste': 'Timor Leste',
-      'kamerun': 'Kamerun',
+      'kamerun': 'Kamerun', 'cameroon': 'Kamerun',
       'mali': 'Mali',
       'niger': 'Niger',
       'ethiopia': 'Ethiopia', 'ethopia': 'Ethiopia',
+      'tanzania': 'Tanzania',
+      'selandia baru': 'Selandia Baru', 'new zealand': 'Selandia Baru',
+      'bangladesh': 'Bangladesh',
+      'pakistan': 'Pakistan',
+      'sri lanka': 'Sri Lanka', 'srilanka': 'Sri Lanka',
+      'india': 'India',
+      'papua nugini': 'Papua Nugini',
+      'vietnam': 'Vietnam',
+      'kamboja': 'Kamboja',
       'amerika': 'Amerika Serikat',
       'australia': 'Australia',
       'hongkong': 'Hongkong', 'hong kong': 'Hongkong',
@@ -611,6 +620,7 @@
           let totalPenerima = 0;          let lembagaSet = new Set();
           let provinsiSet = new Set();
           let provCountMap = new Map();
+          let provLembagaMap = new Map();
           let negaraMap = new Map(); 
           let opzList = [];
           
@@ -741,6 +751,10 @@
             opzProvSet.forEach(p => {
                 provinsiSet.add(p);
                 provCountMap.set(p, (provCountMap.get(p) || 0) + 1);
+                
+                let list = provLembagaMap.get(p) || [];
+                if (name && !list.includes(name)) list.push(name);
+                provLembagaMap.set(p, list);
             });
             
             let negKey = Object.keys(row).find(k => k && (
@@ -851,6 +865,15 @@
                else if(name === 'Perancis') iso = 'fr';
                else if(name === 'Thailand') iso = 'th';
                else if(name === 'Arab Saudi') iso = 'sa';
+               else if(name === 'Tanzania') iso = 'tz';
+               else if(name === 'Selandia Baru') iso = 'nz';
+               else if(name === 'Bangladesh') iso = 'bd';
+               else if(name === 'Pakistan') iso = 'pk';
+               else if(name === 'Sri Lanka') iso = 'lk';
+               else if(name === 'India') iso = 'in';
+               else if(name === 'Papua Nugini') iso = 'pg';
+               else if(name === 'Vietnam') iso = 'vn';
+               else if(name === 'Kamboja') iso = 'kh';
                
                let flagHtml = iso 
                  ? `<img src="https://flagcdn.com/w40/${iso}.png" alt="${name}" style="width: 32px; height: 24px; border-radius: 3px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">`
@@ -902,6 +925,21 @@
           provCountMap.forEach(v => { if(v > maxProvCount) maxProvCount = v; });
           if(maxProvCount === 0) maxProvCount = 1;
 
+          function getProvLembaga(pName) {
+             let list = [];
+             let searchP = pName.toLowerCase().replace('dki ', '').replace('di ', '');
+             provLembagaMap.forEach((v, k) => {
+                 let searchK = k.toLowerCase().replace('dki ', '').replace('di ', '');
+                 if (searchK === searchP || searchK === searchP.replace('kepulauan ', '')) list = list.concat(v);
+                 if(searchK === 'yogyakarta' && searchP.includes('yogyakarta')) list = list.concat(v);
+                 if((searchK === 'jabar' || searchK === 'jawa barat') && (searchP === 'jabar' || searchP === 'jawa barat')) list = list.concat(v);
+                 if((searchK === 'jateng' || searchK === 'jawa tengah') && (searchP === 'jateng' || searchP === 'jawa tengah')) list = list.concat(v);
+                 if((searchK === 'jatim' || searchK === 'jawa timur') && (searchP === 'jatim' || searchP === 'jawa timur')) list = list.concat(v);
+                 if(searchK === 'bangka belitung' && searchP.includes('bangka belitung')) list = list.concat(v);
+             });
+             return [...new Set(list)].sort();
+          }
+
           function getProvCount(pName) {
              let count = 0;
              let searchP = pName.toLowerCase().replace('dki ', '').replace('di ', '');
@@ -933,10 +971,16 @@
           
           function onEachFeature(feature, layer) {
              let count = getProvCount(feature.properties.PROVINSI);
-             layer.bindTooltip(`<b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur`, {
+             let lembagaList = getProvLembaga(feature.properties.PROVINSI);
+             let listHtml = lembagaList.length > 0 ? lembagaList.join('<br/>• ') : 'Tidak ada data';
+
+             layer.bindTooltip(`<b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur<br/><span style="font-size:0.8em;color:#aaa;">Klik untuk melihat daftar lembaga</span>`, {
                  sticky: true,
                  direction: 'auto'
              });
+
+             layer.bindPopup(`<div style="min-width:200px;"><b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur<hr style="margin:8px 0;border-color:#eee;border-style:solid;"/><div style="max-height:150px; overflow-y:auto; font-size:0.85em; line-height:1.4;">• ${listHtml}</div></div>`);
+
              layer.on({
                  mouseover: function(e) {
                      var layer = e.target;
