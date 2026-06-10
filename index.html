@@ -369,6 +369,7 @@
   </div>
 
   <script>
+    function initDashboard() {
     function parseIndonesianNumber(str) {
       if (!str) return 0;
       const cleaned = str.toString().replace(/\./g, '').replace(/,/g, '.');
@@ -1332,7 +1333,7 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Dashboard Logic
       // Setup Tab Listeners
       document.querySelectorAll('#tab-penghimpunan .tab-btn').forEach(btn => {
          btn.addEventListener('click', (e) => {
@@ -1395,62 +1396,155 @@
       }
     });
 
-      // Start Fetching Data
       fetchAndProcessData();
-    });
-    // Sidebar Toggle Logic
-    const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
-    const desktopBtn = document.getElementById('desktop-menu-btn');
-    const mobileBtn = document.getElementById('mobile-menu-btn');
 
-    if(desktopBtn && mobileBtn && sidebar && mainContent) {
-      desktopBtn.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove('open');
-        } else {
-          sidebar.classList.toggle('collapsed');
-          mainContent.classList.toggle('expanded');
-          
-          // Save state
-          const isCollapsed = sidebar.classList.contains('collapsed');
-          localStorage.setItem('sidebarState', isCollapsed ? 'collapsed' : 'expanded');
-        }
-      });
+    } // end initDashboard
 
-      mobileBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-      });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDashboard);
+    } else {
+      initDashboard();
+    }
+    // SPA Caching & Sidebar Logic
+    if (!window.spaInitialized) {
+      window.spaInitialized = true;
+      window.pageCache = {};
+      
+      const sidebar = document.querySelector('.sidebar');
+      const desktopBtn = document.getElementById('desktop-menu-btn');
+      const mobileBtn = document.getElementById('mobile-menu-btn');
+      
+      // Save current page to cache
+      const initialUrl = window.location.pathname.split('/').pop() || 'index.html';
+      window.pageCache[initialUrl] = {
+         content: document.querySelector('.main-content'),
+         title: document.title
+      };
 
-      // Close sidebar on mobile when clicking outside
-      document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-          if (!sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
-            sidebar.classList.remove('open');
-          }
-        }
-      });
-
-      // Animate page transition on menu click
-      const menuLinks = document.querySelectorAll('.sidebar-menu a');
-      menuLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-          const targetHref = link.getAttribute('href');
-          
+      if(desktopBtn && mobileBtn && sidebar) {
+        desktopBtn.addEventListener('click', () => {
           if (window.innerWidth <= 768) {
             sidebar.classList.remove('open');
-          }
-
-          if (targetHref && targetHref !== '#' && !targetHref.startsWith('javascript:')) {
-            e.preventDefault();
+          } else {
+            sidebar.classList.toggle('collapsed');
             const mc = document.querySelector('.main-content');
-            if (mc) mc.classList.add('page-fade-out');
-            setTimeout(() => {
-              window.location.href = targetHref;
-            }, 300);
+            if(mc) mc.classList.toggle('expanded');
+            
+            // Save state
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            localStorage.setItem('sidebarState', isCollapsed ? 'collapsed' : 'expanded');
           }
         });
-      });
+
+        mobileBtn.addEventListener('click', () => {
+          sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener('click', (e) => {
+          if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            if (!sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+              sidebar.classList.remove('open');
+            }
+          }
+        });
+
+        // PJAX Navigation
+        const menuLinks = document.querySelectorAll('.sidebar-menu a');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', async (e) => {
+            const targetHref = link.getAttribute('href');
+            if (!targetHref || targetHref === '#' || targetHref.startsWith('javascript:') || link.getAttribute('target') === '_blank') return;
+            
+            e.preventDefault();
+            
+            if (window.innerWidth <= 768) {
+              sidebar.classList.remove('open');
+            }
+
+            const currentMc = document.querySelector('.main-content');
+            if (currentMc) currentMc.classList.add('page-fade-out');
+
+            // Update active menu visually
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            link.parentElement.classList.add('active');
+
+            setTimeout(async () => {
+               const targetFile = targetHref.split('/').pop();
+               
+               if (window.pageCache[targetFile]) {
+                  // Restore from Cache
+                  if (currentMc) currentMc.replaceWith(window.pageCache[targetFile].content);
+                  window.pageCache[targetFile].content.classList.remove('page-fade-out');
+                  document.title = window.pageCache[targetFile].title;
+                  window.history.pushState({}, '', targetHref);
+               } else {
+                  // Fetch new page
+                  try {
+                      const res = await fetch(targetHref);
+                      const html = await res.text();
+                      const doc = new DOMParser().parseFromString(html, 'text/html');
+                      const newMc = doc.querySelector('.main-content');
+                      
+                      if (newMc) {
+                          if (currentMc) currentMc.replaceWith(newMc);
+                          newMc.classList.remove('page-fade-out');
+                          document.title = doc.title;
+                          window.history.pushState({}, '', targetHref);
+                          
+                          // Cache it
+                          window.pageCache[targetFile] = {
+                             content: newMc,
+                             title: doc.title
+                          };
+                          
+                          // Execute Scripts inside new content
+                          const scripts = newMc.querySelectorAll('script');
+                          scripts.forEach(oldScript => {
+                              if (oldScript.src) {
+                                  if (!document.querySelector(`script[src="${oldScript.src}"]`)) {
+                                      const s = document.createElement('script');
+                                      s.src = oldScript.src;
+                                      document.head.appendChild(s);
+                                  }
+                              } else {
+                                  const newScript = document.createElement('script');
+                                  newScript.textContent = oldScript.innerHTML;
+                                  document.body.appendChild(newScript);
+                              }
+                          });
+                      } else {
+                          window.location.href = targetHref;
+                      }
+                  } catch (err) {
+                      window.location.href = targetHref;
+                  }
+               }
+            }, 300);
+          });
+        });
+        
+        // Handle Back Button
+        window.addEventListener('popstate', () => {
+            const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+            if (window.pageCache[currentFile]) {
+               const currentMc = document.querySelector('.main-content');
+               if (currentMc) currentMc.replaceWith(window.pageCache[currentFile].content);
+               window.pageCache[currentFile].content.classList.remove('page-fade-out');
+               document.title = window.pageCache[currentFile].title;
+               
+               // Update sidebar
+               document.querySelectorAll('.sidebar-menu a').forEach(a => {
+                   if (a.getAttribute('href') === currentFile) {
+                       document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+                       a.parentElement.classList.add('active');
+                   }
+               });
+            } else {
+               window.location.reload();
+            }
+        });
+      }
     }
   </script>
     <!-- AI Assistant Widget (External JS) -->
