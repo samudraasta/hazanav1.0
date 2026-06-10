@@ -1700,6 +1700,7 @@ body {
 .sidebar-logo {
   display: flex;
   align-items: center;
+  height: 48px;
   padding: 0 20px;
   margin-bottom: 2rem;
   overflow: hidden;
@@ -1769,11 +1770,12 @@ body {
 .sidebar-menu li a {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  height: 40px;
+  padding: 0 20px;
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   transition: all 0.2s ease;
-  border-radius: 0 24px 24px 0;
+  border-radius: 0 20px 20px 0;
   margin-right: 16px;
 }
 
