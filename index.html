@@ -616,6 +616,7 @@
           let lembagaSet = new Set();
           let provinsiSet = new Set();
           let provCountMap = new Map();
+          let provLembagaMap = new Map();
           let negaraMap = new Map(); 
           let opzList = [];
           
@@ -729,6 +730,10 @@
             opzProvSet.forEach(p => {
                 provinsiSet.add(p);
                 provCountMap.set(p, (provCountMap.get(p) || 0) + 1);
+                
+                let list = provLembagaMap.get(p) || [];
+                if (name && !list.includes(name)) list.push(name);
+                provLembagaMap.set(p, list);
             });
             
             let negStr = (row['8. Negara Penyaluran Kurban di Luar Negeri'] || '').toLowerCase();
@@ -881,6 +886,21 @@
           provCountMap.forEach(v => { if(v > maxProvCount) maxProvCount = v; });
           if(maxProvCount === 0) maxProvCount = 1;
 
+          function getProvLembaga(pName) {
+             let list = [];
+             let searchP = pName.toLowerCase().replace('dki ', '').replace('di ', '');
+             provLembagaMap.forEach((v, k) => {
+                 let searchK = k.toLowerCase().replace('dki ', '').replace('di ', '');
+                 if (searchK === searchP || searchK === searchP.replace('kepulauan ', '')) list = list.concat(v);
+                 if(searchK === 'yogyakarta' && searchP.includes('yogyakarta')) list = list.concat(v);
+                 if((searchK === 'jabar' || searchK === 'jawa barat') && (searchP === 'jabar' || searchP === 'jawa barat')) list = list.concat(v);
+                 if((searchK === 'jateng' || searchK === 'jawa tengah') && (searchP === 'jateng' || searchP === 'jawa tengah')) list = list.concat(v);
+                 if((searchK === 'jatim' || searchK === 'jawa timur') && (searchP === 'jatim' || searchP === 'jawa timur')) list = list.concat(v);
+                 if(searchK === 'bangka belitung' && searchP.includes('bangka belitung')) list = list.concat(v);
+             });
+             return [...new Set(list)].sort();
+          }
+
           function getProvCount(pName) {
              let count = 0;
              let searchP = pName.toLowerCase().replace('dki ', '').replace('di ', '');
@@ -912,10 +932,16 @@
           
           function onEachFeature(feature, layer) {
              let count = getProvCount(feature.properties.PROVINSI);
-             layer.bindTooltip(`<b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur`, {
+             let lembagaList = getProvLembaga(feature.properties.PROVINSI);
+             let listHtml = lembagaList.length > 0 ? lembagaList.join('<br/>• ') : 'Tidak ada data';
+
+             layer.bindTooltip(`<b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur<br/><span style="font-size:0.8em;color:#aaa;">Klik untuk melihat daftar lembaga</span>`, {
                  sticky: true,
                  direction: 'auto'
              });
+
+             layer.bindPopup(`<div style="min-width:200px;"><b>${feature.properties.PROVINSI}</b><br/>${count} Lembaga Penyalur<hr style="margin:8px 0;border-color:#eee;border-style:solid;"/><div style="max-height:150px; overflow-y:auto; font-size:0.85em; line-height:1.4;">• ${listHtml}</div></div>`);
+
              layer.on({
                  mouseover: function(e) {
                      var layer = e.target;
