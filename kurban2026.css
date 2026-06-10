@@ -249,7 +249,7 @@ body {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .stat-card.primary {
