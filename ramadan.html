@@ -1462,9 +1462,17 @@
                       } else {
                           window.location.href = targetHref;
                       }
-                  } catch (err) {
+                   } catch (err) {
                       window.location.href = targetHref;
                   }
+               }
+               
+               // Sync expanded class based on current sidebar state
+               const activeMc = document.querySelector('.main-content');
+               if (activeMc && sidebar.classList.contains('collapsed')) {
+                   activeMc.classList.add('expanded');
+               } else if (activeMc) {
+                   activeMc.classList.remove('expanded');
                }
             }, 300);
           });
@@ -1486,6 +1494,14 @@
                        a.parentElement.classList.add('active');
                    }
                });
+               
+               // Sync expanded class based on current sidebar state
+               const activeMc = document.querySelector('.main-content');
+               if (activeMc && sidebar.classList.contains('collapsed')) {
+                   activeMc.classList.add('expanded');
+               } else if (activeMc) {
+                   activeMc.classList.remove('expanded');
+               }
             } else {
                window.location.reload();
             }
