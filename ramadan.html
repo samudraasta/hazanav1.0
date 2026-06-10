@@ -979,6 +979,27 @@
           geojsonLayer.addTo(map);
           map.fitBounds(geojsonLayer.getBounds());
 
+          let LuarNegeriControl = L.Control.extend({
+              options: { position: 'bottomleft' },
+              onAdd: function (m) {
+                  let div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                  div.style.backgroundColor = 'white';
+                  div.style.padding = '6px 12px';
+                  div.style.borderRadius = '8px';
+                  div.style.fontWeight = '700';
+                  div.style.color = 'var(--text-main)';
+                  div.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                  div.style.fontSize = '0.85rem';
+                  div.style.display = 'flex';
+                  div.style.alignItems = 'center';
+                  div.style.gap = '8px';
+                  div.style.margin = '10px';
+                  div.innerHTML = `<i class="fas fa-globe" style="color:var(--primary); font-size:1rem;"></i> <span>Luar Negeri: <span style="color:var(--primary);">${negaraArr.length} Negara</span></span>`;
+                  return div;
+              }
+          });
+          map.addControl(new LuarNegeriControl());
+
           // Setup Fullscreen Modal
           let modal = document.getElementById('map-modal');
           let modalMap = null;
@@ -990,6 +1011,7 @@
                   let modalLayer = L.geoJSON(INDONESIA_MAP, { style: style, onEachFeature: onEachFeature });
                   modalLayer.addTo(modalMap);
                   modalMap.fitBounds(modalLayer.getBounds());
+                  modalMap.addControl(new LuarNegeriControl());
               }
           });
           document.getElementById('close-modal').addEventListener('click', () => {
