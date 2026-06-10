@@ -1376,19 +1376,22 @@
       }
     });
 
-    // Animate sidebar hide on menu click (Mobile Only)
+    // Animate page transition on menu click
     const menuLinks = document.querySelectorAll('.sidebar-menu a');
     menuLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         const targetHref = link.getAttribute('href');
+        
         if (window.innerWidth <= 768) {
           sidebar.classList.remove('open');
-          if (targetHref && targetHref !== '#' && !targetHref.startsWith('javascript:')) {
-            e.preventDefault();
-            setTimeout(() => {
-              window.location.href = targetHref;
-            }, 300);
-          }
+        }
+
+        if (targetHref && targetHref !== '#' && !targetHref.startsWith('javascript:')) {
+          e.preventDefault();
+          document.body.classList.add('page-fade-out');
+          setTimeout(() => {
+            window.location.href = targetHref;
+          }, 300);
         }
       });
     });
