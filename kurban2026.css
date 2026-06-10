@@ -40,11 +40,6 @@ body {
   color: var(--text-main);
   padding: 1.5rem;
   min-height: 100vh;
-  animation: pageFadeIn 0.3s ease-out forwards;
-}
-
-body.page-fade-out {
-  animation: pageFadeOut 0.3s ease-in forwards;
 }
 
 @keyframes pageFadeIn {
@@ -1838,14 +1833,17 @@ body {
   font-weight: 700;
 }
 
+/* Main Content */
 .main-content {
-  flex: 1;
-  margin-left: 250px;
-  padding: 2rem;
-  overflow-y: auto;
-  height: 100vh;
-  box-sizing: border-box;
+  margin-left: 280px;
+  padding: 2.5rem;
+  min-height: 100vh;
   transition: margin-left 0.3s ease;
+  animation: pageFadeIn 0.3s ease-out forwards;
+}
+
+.main-content.page-fade-out {
+  animation: pageFadeOut 0.3s ease-in forwards;
 }
 
 .main-content.expanded {

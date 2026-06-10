@@ -1388,7 +1388,8 @@
 
         if (targetHref && targetHref !== '#' && !targetHref.startsWith('javascript:')) {
           e.preventDefault();
-          document.body.classList.add('page-fade-out');
+          const mc = document.querySelector('.main-content');
+          if (mc) mc.classList.add('page-fade-out');
           setTimeout(() => {
             window.location.href = targetHref;
           }, 300);
