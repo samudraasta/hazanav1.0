@@ -270,6 +270,7 @@
               <option value="all">Semua</option>
             </select>
           </div>
+          <button class="btn" id="btn-reset-table" style="padding: 0.5rem 1rem; margin-left: 8px; display: flex; align-items: center; gap: 6px;"><i class="fas fa-undo"></i> Reset</button>
         </div>
       </div>
       <div class="table-wrapper">
@@ -1118,6 +1119,17 @@
           document.getElementById('table-search').addEventListener('input', () => { window.tableCurrentPage = 1; renderTable(); });
           document.getElementById('table-filter-skala').addEventListener('change', () => { window.tableCurrentPage = 1; renderTable(); });
           document.getElementById('table-limit-rows').addEventListener('change', () => { window.tableCurrentPage = 1; renderTable(); });
+          
+          document.getElementById('btn-reset-table').addEventListener('click', () => {
+            document.getElementById('table-search').value = '';
+            document.getElementById('table-filter-skala').value = 'all';
+            document.getElementById('table-limit-rows').value = '10';
+            window.tableCurrentPage = 1;
+            window.tableSortCol = null;
+            window.tableSortDir = null;
+            document.querySelectorAll('#opz-data-table th.sortable i').forEach(ic => { ic.className = 'fas fa-sort'; });
+            renderTable();
+          });
           
           document.getElementById('btn-prev-page').addEventListener('click', () => {
             if (window.tableCurrentPage > 1) {
