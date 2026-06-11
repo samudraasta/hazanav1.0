@@ -1781,7 +1781,7 @@ body {
 }
 
 .sidebar.collapsed .sidebar-menu li a {
-  border-radius: 50%;
+  border-radius: 20px;
   margin: 0;
   margin-left: 20px;
   padding: 0;
