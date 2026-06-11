@@ -944,6 +944,11 @@
           let map = L.map('regions_div', mapOpts);
           geojsonLayer.addTo(map);
           map.fitBounds(geojsonLayer.getBounds());
+          
+          setTimeout(() => {
+              map.invalidateSize();
+              map.fitBounds(geojsonLayer.getBounds());
+          }, 300);
 
           // Setup Fullscreen Modal
           let modal = document.getElementById('map-modal');
