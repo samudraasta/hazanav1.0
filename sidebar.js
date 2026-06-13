@@ -16,7 +16,7 @@
         </span>
       </div>
       <ul class="sidebar-menu">
-        <li><a href="index.html"><i class="fas fa-cow"></i> <span>Kurban 1447 H</span></a></li>
+        <li><a href="kurban.html"><i class="fas fa-cow"></i> <span>Kurban 1447 H</span></a></li>
         <li><a href="ramadan.html"><i class="fas fa-moon"></i> <span>Ramadan 1447 H</span></a></li>
       </ul>
       <div style="flex-grow: 1;"></div>
@@ -33,7 +33,7 @@
   }
 
   // Set active menu based on current URL
-  const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+  const currentFile = window.location.pathname.split('/').pop() || 'kurban.html';
   document.querySelectorAll('.sidebar-menu a').forEach(a => {
     if (a.getAttribute('href') === currentFile) {
       a.parentElement.classList.add('active');
@@ -170,7 +170,7 @@
       
       // Handle Back Button
       window.addEventListener('popstate', () => {
-          const currentFile = window.location.pathname.split('/').pop() || 'index.html';
+          const currentFile = window.location.pathname.split('/').pop() || 'kurban.html';
           if (window.pageCache[currentFile]) {
              const currentMc = document.querySelector('.main-content');
              if (currentMc) currentMc.replaceWith(window.pageCache[currentFile].content);
